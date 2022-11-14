@@ -233,8 +233,6 @@
         <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
         <script type="text/javascript">
             $(document).ready(function () {
-
-
                 $('#lblusernameerror').hide();
                 $("#lblNic").hide();
                 $('#lblemail').hide();
@@ -256,6 +254,7 @@
                         $('#usernamecontainer').css('box-shadow', '1px 1px 3px red');
                     }
                 });
+
 
                 $('#txtNic').on('change past keyup', function () {
                     var data = {nic: $('#txtNic').val(), type: "nic"};
@@ -383,16 +382,16 @@
                     data: "uname=" + data.username + "&" + "pwd=" + data.password + "&" + "fname=" + data.firstname + "&" + "lname=" + data.lastname + "&" + "nic=" + data.nic + "&" + "city=" + data.address + "&" + "dob=" + data.dob + "&" + "email=" + data.email,
                     success: function (resp) {
                         var obj = resp;
-                        if (obj.data == 'true') {
-                            $('#errortext').text("USER UPDATE SUCCESS");
+                        if (resp.data == 'true') {
+                          $('#errortext').text("USER UPDATE SUCCESS");
 
                             $('#errorsubtext').text('Your are login now dashboard');
                             $('#lblerrocontainer').css('border-left', '5px green solid')
                             $('#errorimg').attr('src', './assets/css/success.png');
                             $('#lblerrormsg').show();
                             setTimeout(setTimerSucces, 2000);
-                        } else if (obj.data == 'false') {
-                            $('#errortext').text("FAIL TO UPDATE");
+                        } else if (resp.data == 'false') {
+                             $('#errortext').text("FAIL TO UPDATE");
                             $('#errorsubtext').text('Please try again');
                             $('#lblerrocontainer').css('border-left', '5px red solid')
                             $('#errorimg').attr('src', './assets/css/faild.png');
@@ -431,21 +430,17 @@
                     url: "http://localhost:8080/strutslogin/checkUser",
                     data: "uname=" + data.username + "&" + "type=" + data.type,
                     success: function (resp) {
-
                         var obj = resp;
-
-
                         if (obj.data == "true") {
-                            $(".lblusernameerror").hide();
+                            $("#lblusernameerror").hide();
                             return true;
                         } else {
-                            $(".lblusernameerror").show();
+                            $("#lblusernameerror").show();
                             return false;
                         }
                     }
                 });
-            });
-
+            }
         </script>
     </body>
 </html>
