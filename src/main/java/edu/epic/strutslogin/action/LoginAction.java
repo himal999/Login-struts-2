@@ -4,6 +4,7 @@
  */
 package edu.epic.strutslogin.action;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import edu.epic.strutslogin.bean.User;
 import edu.epic.strutslogin.db.DbConnection;
@@ -13,7 +14,9 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,8 +70,15 @@ public class LoginAction extends ActionSupport {
         if (!allUser.isEmpty()) {
             for (User temp : allUser) {
                 if (temp.getUsername().equals(userName) && temp.getPassword().equals(password)) {
-                    status.put("data", "true");
-                    return SUCCESS;
+
+                    if (updateLoginInfo(userName)) {
+                        ActionContext.getContext().getSession().put("username", userName);
+                        ActionContext.getContext().getSession().put("user", temp);
+
+                        status.put("data", "true");
+                        return SUCCESS;
+                    }
+
                 }
             }
         }
@@ -102,6 +112,21 @@ public class LoginAction extends ActionSupport {
 
         return users;
 
+    }
+
+    private boolean updateLoginInfo(String userName) throws SQLException, ClassNotFoundException {
+
+        String time = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(Calendar.getInstance().getTime());
+
+        Connection connection = DbConnection.getInstance().getConnection();
+        PreparedStatement pst = connection.prepareStatement("UPDATE `user_detail` SET acc_last_login=? WHERE username=?");
+        pst.setObject(1, time);
+        pst.setObject(2, userName);
+
+        if (pst.executeUpdate() > 0) {
+            return true;
+        }
+        return false;
     }
 
 }

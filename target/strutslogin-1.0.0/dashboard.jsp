@@ -3,13 +3,8 @@
     Created on : Oct 27, 2022, 5:56:01 PM
     Author     : himal
 --%>
-
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="edu.epic.strutslogin.bean.User"%>
-
-
-
-
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -23,15 +18,14 @@
         <%
 
             //checking session 
-    
             response.setHeader("Cache-Control", "no-cache,no-store,must-revalidate");
             response.setHeader("Expires", "0");
 
             if (session.getAttribute("username") == null) {
                 response.sendRedirect("index.jsp");
-          } else {
+            } else {
 
-                UserDto user = (UserDto) session.getAttribute("user");
+                User user = (User) session.getAttribute("user");
 
             }
 
@@ -64,7 +58,7 @@
                 </thead>
                 <tbody>
 
-<!--                    <tr>
+                    <tr>
                         <td><c:out value="${user.getFname()}"/>&nbsp;<c:out value="${user.getLname()}"/></td>
                         <td><c:out value="${user.getNic()}"/></td>
                         <td><c:out value="${user.getAddress()}"/></td>
@@ -76,7 +70,7 @@
 
 
 
-                    </tr>-->
+                    </tr>
 
 
                 </tbody>
@@ -94,54 +88,10 @@
 
 
         <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
-<!--        <script type="text/javascript">
+        <script type="text/javascript">
 
-            $(document).ready(function () {
-                //load user deatails
-//                $.ajax({
-//                    type: "GET",
-//                    url: "http://localhost:8080/login/dashboard",
-//
-//                    success: function (msg) {
-//                        alert(msg);
-//                        var ss = JSON.stringify(msg);
-//                        alert(ss)
-//
-//                        var row = `<tr><td>${my.username}</td><td>${my.username}</td><td>${my.username}</td><td>${my.username}</td><td>${my.username}</td><td>${my.username}</td><td>${my.username}</td><td><div style="display: flex;justify-content: center; align-items: center;font-size: 1.5rem;">
-//                                <i class='bx bx-pencil customerUpdateBtn' style="margin-right: 1.5rem;" ></i>
-//                                <i class='bx bx-trash customerDeleteBtn' style="margin-left: 1.5rem;"></i>
-//                           </div></td></tr>`;
-//                        $('#tbldata').append(row);
-//
-//
-//                    }
-//                });
-            });
 
-//            $("#btnAddUser").click(function () {
-//                var data = {
-//                    "username": $("#txtUserName").val(),
-//                    "password": $("#txtpassword").val(),
-//                    "cpassword": $("#txtConfirmPassword").val(),
-//                    "firstname": $("#txtFirstName").val(),
-//                    "lastname": $("#txtLastName").val(),
-//                    "nic": $("#txtNIC").val(),
-//                    "address": $("#txtAddress").val(),
-//                    "dob": $("#txtDOB").val(),
-//                    "email": $("#txtEmail").val()
-//
-//                }
-//                $.ajax({
-//                    type: "post",
-//                    url: "http://localhost:8080/login/dashboard",
-//                    data: data,
-//                    success: function (msg) {
-//                        alert(msg)
-//                    }, error: function (err) {
-//                        console.log(err);
-//                    },
-//                });
-            //   });
+
             $('#btnDelete').click(function () {
 
 
@@ -149,7 +99,6 @@
                     $.ajax({
                         type: "delete",
                         url: "http://localhost:8080/login/dashboard",
-
                         success: function (msg) {
 
                             if (msg == 'true') {
@@ -167,25 +116,27 @@
 
             });
 
+
+
             $('#btnlogout').click(function () {
                 if (confirm("Are you sure want to logout?")) {
                     $.ajax({
                         type: "get",
-                        url: "http://localhost:8080/login/logout",
-                        success: function (msg) {
-                            
-                            if(msg == 'true'){
+                        url: "http://localhost:8080/strutslogin/logout",
+                        success: function (resp) {
+                            var obj = resp;
+                            if (obj.data == 'true') {
                                 window.location.href = "index.jsp";
                             }
-                            
+
                         },
                         error: function (err) {
-                            console.log(err)
+                            console.log(err);
                         }
 
-                    })
+                    });
                 }
-            })
-        </script>-->
+            });
+        </script>
     </body>
 </html>

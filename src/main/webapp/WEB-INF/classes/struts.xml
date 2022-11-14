@@ -16,12 +16,7 @@
     <package name="json"  extends="json-default">
         
         
-         <action name="login" class="edu.epic.strutslogin.action.LoginAction" method="validLoginRequest">
-            <result type="json">
-                <param name="root">status</param>
-            </result>
-	
-        </action>
+       
     
         <action name="checkUser" class="edu.epic.strutslogin.action.LoginAction" method="isRegisterdUser">
             <result type="json">
@@ -30,7 +25,19 @@
 	
         </action>
         
-       
+         <action name="login" class="edu.epic.strutslogin.action.LoginAction" method="validLoginRequest">
+            <result type="json">
+                <param name="root">status</param>
+            </result>
+	
+        </action>
+        
+            <action name="logout" class="edu.epic.strutslogin.action.DashboardAction" method="logOutRequest">
+            <result type="json">
+                <param name="root">status</param>
+            </result>
+	
+        </action>
 
     </package>
     
