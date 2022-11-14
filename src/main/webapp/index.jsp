@@ -439,11 +439,13 @@
                     var data = {nic: $('#txtNic').val(), type: "nic"};
                     $.ajax({
                         type: 'get',
-                        url: 'http://localhost:8080/login/login',
-                        data: data,
-                        success: function (msg) {
+                        url: 'http://localhost:8080/strutslogin/checkUser',
+                        data: "nic=" + data.nic + "&" + "type=nic",
+                        success: function (resp) {
+                            var obj = resp;
 
-                            if (msg == 'true') {
+                            console.log(obj.data)
+                            if (obj.data == "true") {
                                 $('#niccontainerSignup').css('borderColor', 'red');
                                 $('#niccontainerSignup').css('box-shadow', '1px 1px 3px red');
                                 $("#lblNic").show();
@@ -463,11 +465,11 @@
                     var data = {email: $('#txtEmail').val(), type: "email"};
                     $.ajax({
                         type: 'get',
-                        url: 'http://localhost:8080/login/login',
-                        data: data,
-                        success: function (msg) {
-
-                            if (msg == 'true') {
+                        url: 'http://localhost:8080/strutslogin/checkUser',
+                        data: "email=" + data.email + "&" + "type=email",
+                        success: function (resp) {
+                            var obj = resp;
+                            if (obj.data == 'true') {
 
                                 $('#emailcontainerSignup').css('borderColor', 'red');
                                 $('#emailcontainerSignup').css('box-shadow', '1px 1px 3px red');
@@ -628,12 +630,12 @@
                     url: "http://localhost:8080/strutslogin/login",
                     headers: {
                         Accept: "application/json;charset=utf-8",
-                     
+
                     },
-                    data: "uname="+info.username+"&"+"pwd="+ info.password,
+                    data: "uname=" + info.username + "&" + "pwd=" + info.password,
                     success: function (resp) {
 
-                             var obj   = resp;
+                        var obj = resp;
 
                         if (obj.data === "true") {
                             $('#errortext').text("LOGIN SUCCESS");
@@ -682,11 +684,11 @@
 
                 $.ajax({
                     type: "post",
-                    url: "http://localhost:8080/login/dashboard",
-                    data: data,
-                    success: function (msg) {
-
-                        if (msg == 'true') {
+                    url: "http://localhost:8080/strutslogin/register",
+                    data: "uname=" + data.username + "&" + "pwd=" + data.password +"&"+ "fname=" + data.firstname + "&" + "lname=" + data.lastname + "&" + "nic=" + data.nic + "&"  + "city=" + data.address +"&"+ "dob=" + data.dob + "&" +"email="+data.email,
+                    success: function (resp) {
+                            var obj =resp;
+                        if (resp.data == 'true') {
                             $('#errortext').text("USER CREATE SUCCESS");
 
                             $('#errorsubtext').text('Your are login now dashboard');
@@ -694,7 +696,7 @@
                             $('#errorimg').attr('src', './assets/css/success.png');
                             $('#lblerrormsg').show();
                             setTimeout(setTimerSucces, 2000);
-                        } else if (msg == 'false') {
+                        } else if (resp.data == 'false') {
                             $('#errortext').text("FAIL TO CREATE");
                             $('#errorsubtext').text('Please try again');
                             $('#lblerrocontainer').css('border-left', '5px red solid')
@@ -736,7 +738,7 @@
                         "Content-Type": "application/json;charset=utf-8"
                     },
                     url: "http://localhost:8080/strutslogin/checkUser",
-                    data: "uname=" + data.username,
+                    data: "uname=" + data.username + "&" + "type=" + data.type,
                     success: function (resp) {
 
                         var obj = resp;
