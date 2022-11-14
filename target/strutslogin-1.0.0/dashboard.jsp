@@ -66,7 +66,7 @@
                         <td><c:out value="${user.getEmail()}"/></td>
                         <td><c:out value="${user.getUsername()}"/></td>
                         <td><c:out value="${user.getPassword()}"/></td>
-                        <td><a href="http://localhost:8080/login/update.jsp" class=" btn btn-primary m-2">Edit</a><button id="btnDelete" class="btn btn-warning">Delete</button></td>
+                        <td><a href="http://localhost:8080/strutslogin/update.jsp" class=" btn btn-primary m-2">Edit</a><button id="btnDelete" class="btn btn-warning">Delete</button></td>
 
 
 
@@ -98,11 +98,17 @@
                 if (confirm("Are you sure want to delete account?")) {
                     $.ajax({
                         type: "delete",
-                        url: "http://localhost:8080/login/dashboard",
-                        success: function (msg) {
+                        url: "http://localhost:8080/strutslogin/delete",
+                        success: function (resp) {
 
-                            if (msg == 'true') {
+                            var obj = resp;
+                            
+                            if (obj.data == 'true') {
                                 window.location.href = "index.jsp"
+                            }else{
+                                
+                                
+                                
                             }
 
 

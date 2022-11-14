@@ -44,7 +44,18 @@
             </result>
 	
         </action>
-
+        <action name="update" class="edu.epic.strutslogin.action.DashboardAction" method="updateUser">
+            <result type="json">
+                <param name="root">status</param>
+            </result>
+	
+        </action>
+        <action name="delete" class="edu.epic.strutslogin.action.DashboardAction" method="dropUser">
+            <result type="json">
+                <param name="root">status</param>
+            </result>
+	
+        </action>
     </package>
     
     

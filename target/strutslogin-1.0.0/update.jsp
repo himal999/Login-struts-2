@@ -5,7 +5,7 @@
 --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@page import="com.epic.login_system.dto.UserDto"%>
+<%@page import="edu.epic.strutslogin.bean.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -91,7 +91,7 @@
                 response.sendRedirect("index.jsp");
             } else {
 
-                UserDto user = (UserDto) session.getAttribute("user");
+                User user = (User) session.getAttribute("user");
 
             }
 
@@ -233,6 +233,8 @@
         <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
         <script type="text/javascript">
             $(document).ready(function () {
+
+
                 $('#lblusernameerror').hide();
                 $("#lblNic").hide();
                 $('#lblemail').hide();
@@ -259,17 +261,19 @@
                     var data = {nic: $('#txtNic').val(), type: "nic"};
                     $.ajax({
                         type: 'get',
-                        url: 'http://localhost:8080/login/login',
-                        data: data,
-                        success: function (msg) {
+                        url: 'http://localhost:8080/strutslogin/checkUser',
+                        data: "nic=" + data.nic + "&" + "type=nic",
+                        success: function (resp) {
+                            var obj = resp;
 
-                            if (msg == 'true') {
-                                $('#niccontainer').css('borderColor', 'red');
-                                $('#niccontainer').css('box-shadow', '1px 1px 3px red');
+
+                            if (obj.data == "true") {
+                                $('#niccontainerSignup').css('borderColor', 'red');
+                                $('#niccontainerSignup').css('box-shadow', '1px 1px 3px red');
                                 $("#lblNic").show();
                             } else {
-                                $('#niccontainer').css('borderColor', 'green');
-                                $('#niccontainer').css('box-shadow', '1px 1px 3px green');
+                                $('#niccontainerSignup').css('borderColor', 'green');
+                                $('#niccontainerSignup').css('box-shadow', '1px 1px 3px green');
                                 $("#lblNic").hide();
                             }
 
@@ -284,18 +288,18 @@
                     var data = {email: $('#txtEmail').val(), type: "email"};
                     $.ajax({
                         type: 'get',
-                        url: 'http://localhost:8080/login/login',
-                        data: data,
-                        success: function (msg) {
+                        url: 'http://localhost:8080/strutslogin/checkUser',
+                        data: "email=" + data.email + "&" + "type=email",
+                        success: function (resp) {
+                            var obj = resp;
+                            if (obj.data == 'true') {
 
-                            if (msg == 'true') {
-
-                                $('#emailcontainer').css('borderColor', 'red');
-                                $('#emailcontainer').css('box-shadow', '1px 1px 3px red');
+                                $('#emailcontainerSignup').css('borderColor', 'red');
+                                $('#emailcontainerSignup').css('box-shadow', '1px 1px 3px red');
                                 $("#lblemail").show();
                             } else {
-                                $('#emailcontainer').css('borderColor', 'green');
-                                $('#emailcontainer').css('box-shadow', '1px 1px 3px green');
+                                $('#emailcontainerSignup').css('borderColor', 'green');
+                                $('#emailcontainerSignup').css('box-shadow', '1px 1px 3px green');
                                 $("#lblemail").hide();
                             }
 
@@ -375,11 +379,11 @@
 
                 $.ajax({
                     type: "post",
-                    url: "http://localhost:8080/login/dashboard",
-                    data: data,
-                    success: function (msg) {
-
-                        if (msg == 'true') {
+                    url: "http://localhost:8080/strutslogin/update",
+                    data: "uname=" + data.username + "&" + "pwd=" + data.password + "&" + "fname=" + data.firstname + "&" + "lname=" + data.lastname + "&" + "nic=" + data.nic + "&" + "city=" + data.address + "&" + "dob=" + data.dob + "&" + "email=" + data.email,
+                    success: function (resp) {
+                        var obj = resp;
+                        if (obj.data == 'true') {
                             $('#errortext').text("USER UPDATE SUCCESS");
 
                             $('#errorsubtext').text('Your are login now dashboard');
@@ -387,7 +391,7 @@
                             $('#errorimg').attr('src', './assets/css/success.png');
                             $('#lblerrormsg').show();
                             setTimeout(setTimerSucces, 2000);
-                        } else if (msg == 'false') {
+                        } else if (obj.data == 'false') {
                             $('#errortext').text("FAIL TO UPDATE");
                             $('#errorsubtext').text('Please try again');
                             $('#lblerrocontainer').css('border-left', '5px red solid')
@@ -420,20 +424,28 @@
             function checkAvailableUserName(data) {
                 $.ajax({
                     type: "get",
-                    url: "http://localhost:8080/login/login",
-                    data: data,
-                    success: function (msg) {
+                    headers: {
+                        Accept: "application/json;charset=utf-8",
+                        "Content-Type": "application/json;charset=utf-8"
+                    },
+                    url: "http://localhost:8080/strutslogin/checkUser",
+                    data: "uname=" + data.username + "&" + "type=" + data.type,
+                    success: function (resp) {
 
-                        if (msg == "true") {
-                            $("#lblusernameerror").hide();
+                        var obj = resp;
+
+
+                        if (obj.data == "true") {
+                            $(".lblusernameerror").hide();
                             return true;
                         } else {
-                            $("#lblusernameerror").show();
+                            $(".lblusernameerror").show();
                             return false;
                         }
                     }
                 });
-            }
+            });
+
         </script>
     </body>
 </html>

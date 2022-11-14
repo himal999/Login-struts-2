@@ -444,7 +444,7 @@
                         success: function (resp) {
                             var obj = resp;
 
-                            console.log(obj.data)
+                          
                             if (obj.data == "true") {
                                 $('#niccontainerSignup').css('borderColor', 'red');
                                 $('#niccontainerSignup').css('box-shadow', '1px 1px 3px red');

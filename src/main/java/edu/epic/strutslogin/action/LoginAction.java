@@ -187,6 +187,8 @@ public class LoginAction extends ActionSupport {
 
     }
 
+    
+
 
     /*3rd methods zone*/
     private List<User> getAllUser() throws ClassNotFoundException, SQLException {
