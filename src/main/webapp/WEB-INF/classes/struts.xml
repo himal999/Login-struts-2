@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"https://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+    <package name="default"  extends="struts-default">
+        <action name="index">
+            <result>/index.jsp</result>
+        </action>
+    
+
+    </package>
+    
+    <package name="json"  extends="json-default">
+        
+        
+         <action name="login" class="edu.epic.strutslogin.action.LoginAction" method="validLoginRequest">
+            <result type="json">
+                <param name="root">status</param>
+            </result>
+	
+        </action>
+    
+        <action name="checkUser" class="edu.epic.strutslogin.action.LoginAction" method="isRegisterdUser">
+            <result type="json">
+                <param name="root">status</param>
+            </result>
+	
+        </action>
+        
+       
+
+    </package>
+    
+    
+
+
+</struts>
+

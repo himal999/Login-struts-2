@@ -1,0 +1,3 @@
+edu/epic/strutslogin/bean/User.class
+edu/epic/strutslogin/db/DbConnection.class
+edu/epic/strutslogin/action/LoginAction.class
