@@ -8,7 +8,11 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import edu.epic.strutslogin.bean.User;
 import edu.epic.strutslogin.db.DbConnection;
-import java.sql.Blob;
+import edu.epic.strutslogin.listener.HibernateListener;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -17,15 +21,35 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.logging.Logger;
+import javax.print.attribute.standard.Destination;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+import javax.transaction.Transaction;
 
 import org.apache.struts2.ServletActionContext;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.query.NativeQuery;
+import org.hibernate.service.ServiceRegistry;
 
 /**
  *
@@ -43,7 +67,7 @@ public class LoginAction extends ActionSupport {
         this.status = status;
     }
 
-    public String isRegisterdUser() throws ClassNotFoundException, SQLException {
+    public String isRegisterdUser() throws ClassNotFoundException, SQLException, IOException, FileNotFoundException, RollbackException, HeuristicMixedException, HeuristicRollbackException, SecurityException, IllegalStateException, SystemException {
 
         String type = ServletActionContext.getRequest().getParameter("type");
 
@@ -116,7 +140,7 @@ public class LoginAction extends ActionSupport {
 
     }
 
-    public String validLoginRequest() throws ClassNotFoundException, SQLException {
+    public String validLoginRequest() throws ClassNotFoundException, SQLException, IOException, FileNotFoundException, RollbackException, HeuristicMixedException, HeuristicRollbackException, SecurityException, IllegalStateException, SystemException {
 
         String userName = ServletActionContext.getRequest().getParameter("uname");
         String password = ServletActionContext.getRequest().getParameter("pwd");
@@ -125,6 +149,7 @@ public class LoginAction extends ActionSupport {
 
         if (!allUser.isEmpty()) {
             for (User temp : allUser) {
+
                 if (temp.getUsername().equals(userName) && temp.getPassword().equals(password)) {
 
                     if (updateLoginInfo(userName)) {
@@ -154,65 +179,86 @@ public class LoginAction extends ActionSupport {
         User user = new User(req.getParameter("uname"), req.getParameter("pwd"), req.getParameter("fname"), req.getParameter("lname"), req.getParameter("nic"), req.getParameter("city"), tempDate, req.getParameter("email"), time, time, time, null);
 
         String dob = formatter.format(user.getDob());
-        Connection connection = DbConnection.getInstance().getConnection();
-        PreparedStatement pst = connection.prepareStatement("INSERT INTO `user_detail` VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
-        pst.setString(1, user.getUsername());
-        pst.setObject(2, user.getPassword());
-        pst.setString(3, user.getFname());
-        pst.setString(4, user.getLname());
-        pst.setString(5, user.getNic());
+//        Connection connection = DbConnection.getInstance().getConnection();
+//        PreparedStatement pst = connection.prepareStatement("INSERT INTO `user_detail` VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+//        pst.setString(1, user.getUsername());
+//        pst.setObject(2, user.getPassword());
+//        pst.setString(3, user.getFname());
+//        pst.setString(4, user.getLname());
+//        pst.setString(5, user.getNic());
+//
+//        pst.setString(6, user.getAddress());
+//
+//        pst.setDate(7, Date.valueOf(dob));
+//
+//        pst.setString(8, user.getEmail());
+//
+//        pst.setObject(9, user.getAccCreateInfo());
+//        pst.setObject(10, user.getAccUpdateInfo());
+//        pst.setObject(11, user.getAccLastLoginInfo());
+//        pst.setObject(12, user.getAccLastLogoutInfo());
 
-        pst.setString(6, user.getAddress());
+        Session session = HibernateListener.getInstance().getSession();
+        org.hibernate.Transaction bt = session.beginTransaction();
 
-        pst.setDate(7, Date.valueOf(dob));
+//        NativeQuery query = session.createSQLQuery("INSERT INTO `user_detail` VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+//        query.setString(0, user.getUsername());
+//        query.setString(1, user.getAccCreateInfo());
+//        query.setString(2, user.getAccLastLoginInfo());
+//        query.setString(3, user.getAccLastLogoutInfo());
+//        query.setString(4, user.getAccUpdateInfo());
+//
+//        query.setString(5, user.getAddress());
+//
+//        query.setDate(6, Date.valueOf(dob));
+//
+//        query.setString(7, user.getEmail());
+//
+//        query.setString(8,user.getFname() );
+//        query.setString(9, user.getLname());
+//        query.setString(10,user.getNic());
+//      
+//        query.setString(11, user.getPassword());
 
-        pst.setString(8, user.getEmail());
+         session.save(user);
 
-        pst.setObject(9, user.getAccCreateInfo());
-        pst.setObject(10, user.getAccUpdateInfo());
-        pst.setObject(11, user.getAccLastLoginInfo());
-        pst.setObject(12, user.getAccLastLogoutInfo());
 
-        if (pst.executeUpdate() > 0) {
+        bt.commit();
 
-            HttpSession sess = req.getSession(true);
-            sess.putValue("username", user.getUsername());
-            sess.putValue("user", user);
+        HttpSession sess = req.getSession(true);
+        sess.putValue("username", user.getUsername());
+        sess.putValue("user", user);
 
-            status.put("data", "true");
-            return SUCCESS;
-        }
-        status.put("data", "false");
+        status.put("data", "true");
         return SUCCESS;
 
     }
 
-    
-
-
     /*3rd methods zone*/
-    private List<User> getAllUser() throws ClassNotFoundException, SQLException {
+    private List<User> getAllUser() {
+
+        Session openSession = HibernateListener.getInstance().getSession();
 
         List<User> users = new ArrayList();
 
-        try {
-            Connection connection = DbConnection.getInstance().getConnection();
+        NativeQuery query = openSession.createSQLQuery("SELECT * FROM user_detail");
 
-            PreparedStatement pst = connection.prepareStatement("SELECT * FROM `user_detail`");
+        List<Object> result = (List<Object>) query.list();
 
-            ResultSet rst = pst.executeQuery();
+        Iterator it = result.iterator();
 
-            while (rst.next()) {
-                Blob by = rst.getBlob("password");
-                byte[] bytes = by.getBytes(1, (int) by.length());
+        while (it.hasNext()) {
+            Object[] ob = (Object[]) it.next();
 
-                users.add(new User(rst.getString("username"), new String(bytes), rst.getString("fname"), rst.getString("lname"), rst.getString("nic"), rst.getString("address"), rst.getDate("dob"), rst.getString("email")));
-            }
+            String dob = String.valueOf(ob[6]);
 
-        } catch (ClassNotFoundException | SQLException e) {
+            Date temp = Date.valueOf(dob);
 
-            System.out.println(e.getMessage());
+            users.add(new User(String.valueOf(ob[0]), String.valueOf(ob[11]), String.valueOf(ob[8]), String.valueOf(ob[9]), String.valueOf(ob[10]), String.valueOf(ob[5]), temp, String.valueOf(ob[7])));
+
         }
+
+        openSession.beginTransaction().commit();
 
         return users;
 

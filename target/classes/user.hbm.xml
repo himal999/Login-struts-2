@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="edu.epic.strutslogin.bean.User" table="user_detail">
+
+        <id name="username" type="string">
+            <column name="username" />
+         
+        </id>
+        <property name="password" type="string">
+            <column name="password" length="45" not-null="true" />
+        </property>
+        <property name="fname" type="string">
+            <column name="fname" not-null="true" />
+        </property>
+        <property name="lname" type="string">
+            <column name="lname"  not-null="true" />
+        </property>
+        <property name="nic" type="string" unique="true">
+            <column name="nic"  not-null="true" />
+        </property>
+        <property name="address" type="string">
+            <column name="address"  not-null="true" />
+        </property>
+        <property name="dob" type="date">
+            <column name="dob"  not-null="true" />
+        </property>
+        <property name="email" type="string" unique="true">
+            <column name="email"  not-null="true" />
+        </property>
+        <property name="accCreateInfo" type="timestamp">
+            <column name="acc_create_info"  not-null="true" />
+        </property>
+        <property name="accUpdateInfo" type="timestamp">
+            <column name="acc_update_info"  not-null="true" />
+        </property>
+        <property name="accLastLoginInfo" type="timestamp">
+            <column name="acc_last_login"  not-null="true" />
+        </property>
+        <property name="accLastLogoutInfo" type="timestamp">
+            <column name="acc_last_logout"  not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>
+

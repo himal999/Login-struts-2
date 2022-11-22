@@ -43,7 +43,9 @@ public class DashboardAction extends ActionSupport {
     public String updateUser() throws ParseException, SQLException, ClassNotFoundException {
         HttpServletRequest req = ServletActionContext.getRequest();
 
+        
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        
         java.util.Date tempDate = formatter.parse(req.getParameter("dob"));
 
         String time = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(Calendar.getInstance().getTime());
@@ -54,6 +56,7 @@ public class DashboardAction extends ActionSupport {
 
         Connection connection = DbConnection.getInstance().getConnection();
         PreparedStatement pst = connection.prepareStatement("UPDATE `user_detail` SET username=?,fname=?,lname=?,nic=?,address=?,dob=?,email=?,acc_update_info=? WHERE username=?");
+        
         pst.setString(1, user.getUsername());
         pst.setString(2, user.getFname());
         pst.setString(3, user.getLname());

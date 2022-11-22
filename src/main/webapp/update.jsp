@@ -267,12 +267,12 @@
 
 
                             if (obj.data == "true") {
-                                $('#niccontainerSignup').css('borderColor', 'red');
-                                $('#niccontainerSignup').css('box-shadow', '1px 1px 3px red');
+                                $('#niccontainer').css('borderColor', 'red');
+                                $('#niccontainer').css('box-shadow', '1px 1px 3px red');
                                 $("#lblNic").show();
                             } else {
-                                $('#niccontainerSignup').css('borderColor', 'green');
-                                $('#niccontainerSignup').css('box-shadow', '1px 1px 3px green');
+                                $('#niccontainer').css('borderColor', 'green');
+                                $('#niccontainer').css('box-shadow', '1px 1px 3px green');
                                 $("#lblNic").hide();
                             }
 
@@ -293,12 +293,12 @@
                             var obj = resp;
                             if (obj.data == 'true') {
 
-                                $('#emailcontainerSignup').css('borderColor', 'red');
-                                $('#emailcontainerSignup').css('box-shadow', '1px 1px 3px red');
+                                $('#emailcontainer').css('borderColor', 'red');
+                                $('#emailcontainer').css('box-shadow', '1px 1px 3px red');
                                 $("#lblemail").show();
                             } else {
-                                $('#emailcontainerSignup').css('borderColor', 'green');
-                                $('#emailcontainerSignup').css('box-shadow', '1px 1px 3px green');
+                                $('#emailcontainer').css('borderColor', 'green');
+                                $('#emailcontainer').css('box-shadow', '1px 1px 3px green');
                                 $("#lblemail").hide();
                             }
 
@@ -382,7 +382,7 @@
                     data: "uname=" + data.username + "&" + "pwd=" + data.password + "&" + "fname=" + data.firstname + "&" + "lname=" + data.lastname + "&" + "nic=" + data.nic + "&" + "city=" + data.address + "&" + "dob=" + data.dob + "&" + "email=" + data.email,
                     success: function (resp) {
                         var obj = resp;
-                        if (resp.data == 'true') {
+                        if (obj.data == 'true') {
                           $('#errortext').text("USER UPDATE SUCCESS");
 
                             $('#errorsubtext').text('Your are login now dashboard');
@@ -390,7 +390,7 @@
                             $('#errorimg').attr('src', './assets/css/success.png');
                             $('#lblerrormsg').show();
                             setTimeout(setTimerSucces, 2000);
-                        } else if (resp.data == 'false') {
+                        } else if (obj.data == 'false') {
                              $('#errortext').text("FAIL TO UPDATE");
                             $('#errorsubtext').text('Please try again');
                             $('#lblerrocontainer').css('border-left', '5px red solid')

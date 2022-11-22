@@ -4,14 +4,21 @@
  */
 package edu.epic.strutslogin.bean;
 
+import java.io.Serializable;
 import java.util.Date;
+
 
 /**
  *
  * @author himal
  */
-public class User {
-     private String username;
+
+
+
+
+public class User implements Serializable {
+  
+    private String username;
     private String password;
     private String fname;
     private String lname;
