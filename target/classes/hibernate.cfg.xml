@@ -15,7 +15,7 @@
         <property name="show_sql">true</property>
         <property name="format_sql">true</property>
         <property name="use_sql_comments">false</property>
-        <mapping  class="edu.epic.strutslogin.bean.User" resource="user.hbm.xml" />
+        <mapping   resource="user.hbm.xml" />
     
    
     </session-factory>

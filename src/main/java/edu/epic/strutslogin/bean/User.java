@@ -5,7 +5,13 @@
 package edu.epic.strutslogin.bean;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 
 
 /**
@@ -16,20 +22,32 @@ import java.util.Date;
 
 
 
-public class User implements Serializable {
-  
+
+
+public class User {
+
+   
     private String username;
+  
     private String password;
     private String fname;
     private String lname;
+  
     private String nic;
     private String address;
     private Date dob;
+
+   
+  
     private String email;
-    private String accCreateInfo;
-    private String accUpdateInfo;
-    private String accLastLoginInfo;
-    private String accLastLogoutInfo;
+   
+    private Date accCreateInfo;
+    
+    private Date accUpdateInfo;
+   
+    private Date accLastLoginInfo;
+ 
+    private Date accLastLogoutInfo;
 
     public User() {
     }
@@ -45,7 +63,7 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public User(String username, String fname, String lname, String nic, String address, Date dob, String email, String accUpdateInfo) {
+    public User(String username, String fname, String lname, String nic, String address, Date dob, String email, Date accUpdateInfo) {
         this.username = username;
         this.fname = fname;
         this.lname = lname;
@@ -56,22 +74,11 @@ public class User implements Serializable {
         this.accUpdateInfo = accUpdateInfo;
     }
 
-    public User(String username, String password, String fname, String lname, String nic, String address, Date dob, String email, String accUpdateInfo) {
-        this.username = username;
-        this.password = password;
-        this.fname = fname;
-        this.lname = lname;
-        this.nic = nic;
-        this.address = address;
-        this.dob = dob;
-        this.email = email;
-        this.accUpdateInfo = accUpdateInfo;
- 
-    }
+
     
     
 
-    public User(String username, String password, String fname, String lname, String nic, String address, Date dob, String email, String accCreateInfo, String accUpdateInfo, String accLastLoginInfo, String accLastLogoutInfo) {
+    public User(String username, String password, String fname, String lname, String nic, String address, Date dob, String email, Date accCreateInfo, Date accUpdateInfo, Date accLastLoginInfo, Date accLastLogoutInfo) {
         this.username = username;
         this.password = password;
         this.fname = fname;
@@ -150,35 +157,44 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public String getAccCreateInfo() {
+    public Date getAccCreateInfo() {
         return accCreateInfo;
     }
 
-    public void setAccCreateInfo(String accCreateInfo) {
+    public void setAccCreateInfo(Date accCreateInfo) {
         this.accCreateInfo = accCreateInfo;
     }
 
-    public String getAccUpdateInfo() {
+    public Date getAccUpdateInfo() {
         return accUpdateInfo;
     }
 
-    public void setAccUpdateInfo(String accUpdateInfo) {
+    public void setAccUpdateInfo(Date accUpdateInfo) {
         this.accUpdateInfo = accUpdateInfo;
     }
 
-    public String getAccLastLoginInfo() {
+    public Date getAccLastLoginInfo() {
         return accLastLoginInfo;
     }
 
-    public void setAccLastLoginInfo(String accLastLoginInfo) {
+    public void setAccLastLoginInfo(Date accLastLoginInfo) {
         this.accLastLoginInfo = accLastLoginInfo;
     }
 
-    public String getAccLastLogoutInfo() {
+    public Date getAccLastLogoutInfo() {
         return accLastLogoutInfo;
     }
 
-    public void setAccLastLogoutInfo(String accLastLogoutInfo) {
+    public void setAccLastLogoutInfo(Date accLastLogoutInfo) {
         this.accLastLogoutInfo = accLastLogoutInfo;
     }
+
+    @Override
+    public String toString() {
+        return "User{" + "username=" + username + ", password=" + password + ", fname=" + fname + ", lname=" + lname + ", nic=" + nic + ", address=" + address + ", dob=" + dob + ", email=" + email + ", accCreateInfo=" + accCreateInfo + ", accUpdateInfo=" + accUpdateInfo + ", accLastLoginInfo=" + accLastLoginInfo + ", accLastLogoutInfo=" + accLastLogoutInfo + '}';
+    }
+
+   
+
+
 }

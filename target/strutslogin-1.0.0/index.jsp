@@ -444,7 +444,7 @@
                         success: function (resp) {
                             var obj = resp;
 
-                          
+
                             if (obj.data == "true") {
                                 $('#niccontainerSignup').css('borderColor', 'red');
                                 $('#niccontainerSignup').css('box-shadow', '1px 1px 3px red');
@@ -655,7 +655,12 @@
 
                     },
                     error: function (err) {
-                        console.log(err)
+                        $('#errortext').text("LOGIN FAILD");
+                        $('#errorsubtext').text('Invalid User Name or Password');
+                        $('#lblerrocontainer').css('border-left', '5px red solid')
+                        $('#errorimg').attr('src', './assets/css/faild.png');
+                        $('#lblerrormsg').show();
+                        setTimeout(setTimerErro, 2000);
                     }
 
 
@@ -685,9 +690,9 @@
                 $.ajax({
                     type: "post",
                     url: "http://localhost:8080/strutslogin/register",
-                    data: "uname=" + data.username + "&" + "pwd=" + data.password +"&"+ "fname=" + data.firstname + "&" + "lname=" + data.lastname + "&" + "nic=" + data.nic + "&"  + "city=" + data.address +"&"+ "dob=" + data.dob + "&" +"email="+data.email,
+                    data: "uname=" + data.username + "&" + "pwd=" + data.password + "&" + "fname=" + data.firstname + "&" + "lname=" + data.lastname + "&" + "nic=" + data.nic + "&" + "city=" + data.address + "&" + "dob=" + data.dob + "&" + "email=" + data.email,
                     success: function (resp) {
-                            var obj =resp;
+                        var obj = resp;
                         if (resp.data == 'true') {
                             $('#errortext').text("USER CREATE SUCCESS");
 
@@ -709,7 +714,12 @@
 
 
                     }, error: function (err) {
-                        console.log(err)
+                          $('#errortext').text("FAIL TO CREATE");
+                            $('#errorsubtext').text('Please try again');
+                            $('#lblerrocontainer').css('border-left', '5px red solid')
+                            $('#errorimg').attr('src', './assets/css/faild.png');
+                            $('#lblerrormsg').show();
+                            setTimeout(setTimerErro, 2000);
                     }
                 })
             }

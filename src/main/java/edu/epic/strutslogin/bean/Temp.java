@@ -19,7 +19,7 @@ public class Temp {
     private String lname;
     private String nic;
     private String address;
-    private LocalDate dob;
+    private Date dob;
     private String email;
     private Date accCreateInfo;
     private Date accUpdateInfo;
@@ -29,7 +29,20 @@ public class Temp {
     public Temp() {
     }
 
-    public Temp(String username, String password, String fname, String lname, String nic, String address, LocalDate dob, String email, Date accCreateInfo, Date accUpdateInfo, Date accLastLoginInfo, Date accLastLogoutInfo) {
+    public Temp(String username, String password, String fname, String lname, String nic, String address, Date dob, String email) {
+        this.username = username;
+        this.password = password;
+        this.fname = fname;
+        this.lname = lname;
+        this.nic = nic;
+        this.address = address;
+        this.dob = dob;
+        this.email = email;
+    }
+
+    
+    
+    public Temp(String username, String password, String fname, String lname, String nic, String address, Date dob, String email, Date accCreateInfo, Date accUpdateInfo, Date accLastLoginInfo, Date accLastLogoutInfo) {
         this.username = username;
         this.password = password;
         this.fname = fname;
@@ -92,11 +105,11 @@ public class Temp {
         this.address = address;
     }
 
-    public LocalDate getDob() {
+    public Date getDob() {
         return dob;
     }
 
-    public void setDob(LocalDate dob) {
+    public void setDob(Date dob) {
         this.dob = dob;
     }
 

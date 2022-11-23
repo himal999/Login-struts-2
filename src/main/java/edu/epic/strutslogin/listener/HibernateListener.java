@@ -1,11 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package edu.epic.strutslogin.listener;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
 /**
@@ -14,11 +15,16 @@ import org.hibernate.cfg.Configuration;
  */
 public class HibernateListener {
 
-    private static HibernateListener hibernateListener;
-    private SessionFactory sessionFactory;
+   private static HibernateListener hibernateListener;
+  private SessionFactory sessionFactory;
 
-    private HibernateListener() {
-        sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+   private HibernateListener() {
+        StandardServiceRegistry build = new StandardServiceRegistryBuilder().configure("hibernate.cfg.xml").build();
+      
+        Metadata meta = new MetadataSources(build).getMetadataBuilder().build();
+
+       
+        sessionFactory = meta.getSessionFactoryBuilder().build();
 
     }
 
