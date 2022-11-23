@@ -40,7 +40,7 @@
             <column name="acc_last_login"  not-null="true" />
         </property>
         <property name="accLastLogoutInfo" type="timestamp">
-            <column name="acc_last_logout"  not-null="true" />
+            <column name="acc_last_logout"  not-null="false" />
         </property>
     </class>
 </hibernate-mapping>

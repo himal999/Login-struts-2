@@ -74,6 +74,20 @@ public class User {
         this.accUpdateInfo = accUpdateInfo;
     }
 
+    public User(String username, String password, String fname, String lname, String nic, String address, Date dob, String email, Date accCreateInfo, Date accUpdateInfo, Date accLastLoginInfo) {
+        this.username = username;
+        this.password = password;
+        this.fname = fname;
+        this.lname = lname;
+        this.nic = nic;
+        this.address = address;
+        this.dob = dob;
+        this.email = email;
+        this.accCreateInfo = accCreateInfo;
+        this.accUpdateInfo = accUpdateInfo;
+        this.accLastLoginInfo = accLastLoginInfo;
+    }
+
 
     
     

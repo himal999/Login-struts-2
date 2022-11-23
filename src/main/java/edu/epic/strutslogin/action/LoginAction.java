@@ -13,6 +13,7 @@ import edu.epic.strutslogin.listener.HibernateListener;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Serializable;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -22,7 +23,6 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -178,60 +178,25 @@ public class LoginAction extends ActionSupport {
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date tempDate = formatter.parse(req.getParameter("dob"));
 
-//        LocalDate tempDob = LocalDate.parse(req.getParameter("dob"));
+
         String time = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(Calendar.getInstance().getTime());
 
-        User user = new User(req.getParameter("uname"), req.getParameter("pwd"), req.getParameter("fname"), req.getParameter("lname"), req.getParameter("nic"), req.getParameter("city"), tempDate, req.getParameter("email"));
+        
+        java.util.Date dateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(time);
+        
+        User user = new User(req.getParameter("uname"), req.getParameter("pwd"), req.getParameter("fname"), req.getParameter("lname"), req.getParameter("nic"), req.getParameter("city"), tempDate, req.getParameter("email"), dateTime, dateTime, dateTime);
 
-        String dob = formatter.format(user.getDob());
-//        Connection connection = DbConnection.getInstance().getConnection();
-//        PreparedStatement pst = connection.prepareStatement("INSERT INTO `user_detail` VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
-//        pst.setString(1, user.getUsername());
-//        pst.setObject(2, user.getPassword());
-//        pst.setString(3, user.getFname());
-//        pst.setString(4, user.getLname());
-//        pst.setString(5, user.getNic());
-//
-//        pst.setString(6, user.getAddress());
-//
-//        pst.setDate(7, Date.valueOf(dob));
-//
-//        pst.setString(8, user.getEmail());
-//
-//        pst.setObject(9, user.getAccCreateInfo());
-//        pst.setObject(10, user.getAccUpdateInfo());
-//        pst.setObject(11, user.getAccLastLoginInfo());
-//        pst.setObject(12, user.getAccLastLogoutInfo());
+        Session openSession = HibernateListener.getInstance().getSession();
 
-//        Session session = HibernateListener.getInstance().getSession();
-//        org.hibernate.Transaction bt = session.beginTransaction();
-//        NativeQuery query = session.createSQLQuery("INSERT INTO `user_detail`(username,password,fname,lname,nic,address,dob,email,acc_create_info,acc_last_login,acc_update_info) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
-//        query.setString(1, user.getUsername());
-//        query.setString(2, user.getPassword());
-//        query.setString(3, user.getFname());
-//        query.setString(4, user.getLname());
-//        query.setString(5, user.getNic());
-//
-//        query.setString(6, user.getAddress());
-//
-//        query.setDate(7, Date.valueOf(dob));
-//
-//        query.setString(8, user.getEmail());
-//
-//        query.setString(9, user.getAccCreateInfo());
-//        query.setString(10, user.getAccLastLoginInfo());
-//        session.save(user);
-        if (true) {
-//            bt.commit();
+        org.hibernate.Transaction t = openSession.beginTransaction();
 
-            HttpSession sess = req.getSession(true);
-            sess.putValue("username", user.getUsername());
-            sess.putValue("user", user);
-            status.put("data", "true");
-            return SUCCESS;
-        }
+        openSession.save(user);
+        t.commit();
 
-        status.put("data", "false");
+        HttpSession sess = req.getSession(true);
+        sess.putValue("username", user.getUsername());
+        sess.putValue("user", user);
+        status.put("data", "true");
         return SUCCESS;
 
     }
@@ -239,14 +204,9 @@ public class LoginAction extends ActionSupport {
     /*3rd methods zone*/
     private List<User> getAllUser() {
 
+        Session openSession = HibernateListener.getInstance().getSession();
 
-        
-       Session openSession = HibernateListener.getInstance().getSession();
-      
-      
-    
         org.hibernate.Transaction t = openSession.beginTransaction();
-     
 
         List<User> users = openSession.createQuery("from User").list();
 
@@ -259,32 +219,28 @@ public class LoginAction extends ActionSupport {
     private boolean updateLoginInfo(String userName) throws SQLException, ClassNotFoundException {
 
         String time = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(Calendar.getInstance().getTime());
-       
-       Session openSession = HibernateListener.getInstance().getSession();
-      
-      
-    
+
+        Session openSession = HibernateListener.getInstance().getSession();
+
         org.hibernate.Transaction t = openSession.beginTransaction();
-      
-      
+
         Query query = openSession.createQuery("UPDATE User SET acc_last_login=:time WHERE username=:username");
         query.setParameter("time", time);
         query.setParameter("username", userName);
-        
-        
-        if(query.executeUpdate()>0){
-        
+
+        if (query.executeUpdate() > 0) {
+
             t.commit();
             return true;
-        
-        }else{
-        
+
+        } else {
+
             t.rollback();
             t.commit();
             return false;
-        
+
         }
-       
+
     }
 
 }
