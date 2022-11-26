@@ -8,22 +8,18 @@ import static com.opensymphony.xwork2.Action.SUCCESS;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import edu.epic.strutslogin.bean.User;
-import edu.epic.strutslogin.db.DbConnection;
-import edu.epic.strutslogin.listener.HibernateListener;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
+import edu.epic.strutslogin.util.Crud;
+import edu.epic.strutslogin.util.DateFactory;
+
+
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.apache.struts2.ServletActionContext;
-import org.hibernate.Session;
-import org.hibernate.query.Query;
 
 /**
  *
@@ -32,6 +28,13 @@ import org.hibernate.query.Query;
 public class DashboardAction extends ActionSupport {
 
     private Map<String, String> status = new HashMap<String, String>();
+    private String userName;
+
+    private Date dob;
+    private User user;
+
+    private HttpSession sess;
+    private HttpServletRequest req;
 
     public Map<String, String> getStatus() {
         return status;
@@ -41,111 +44,96 @@ public class DashboardAction extends ActionSupport {
         this.status = status;
     }
 
-    public String updateUser() throws ParseException, SQLException, ClassNotFoundException {
-        HttpServletRequest req = ServletActionContext.getRequest();
+    public String updateUser() {
 
-        String userName = ActionContext.getContext().getSession().get("username").toString();
+        try {
+            req = ServletActionContext.getRequest();
 
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        java.util.Date tempDate = formatter.parse(req.getParameter("dob"));
+            this.userName = ActionContext.getContext().getSession().get("username").toString();
 
-        String time = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(Calendar.getInstance().getTime());
+            dob = DateFactory.getFormatterDate("yyyy-MM-dd", req.getParameter("dob"));
 
-        java.util.Date dateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(time);
+            this.user = new User(req.getParameter("uname"), req.getParameter("pwd"), req.getParameter("fname"), req.getParameter("lname"), req.getParameter("nic"), req.getParameter("city"), this.dob, req.getParameter("email"), Calendar.getInstance().getTime(), Calendar.getInstance().getTime(), Calendar.getInstance().getTime());
 
-        User user = new User(req.getParameter("uname"), req.getParameter("pwd"), req.getParameter("fname"), req.getParameter("lname"), req.getParameter("nic"), req.getParameter("city"), tempDate, req.getParameter("email"), dateTime, dateTime, dateTime);
+            boolean update = Crud.updateOrDelete("UPDATE User SET username=?,fname=?,lname=?,nic=?,address=?,dob=?,email=?,acc_update_info=? WHERE username=?", user.getUsername(), user.getFname(), user.getLname(), user.getNic(), user.getAddress(), user.getDob(), user.getEmail(), user.getAccUpdateInfo(), userName);
 
-        Session openSession = HibernateListener.getInstance().getSession();
+            if (update) {
+                sess = req.getSession();
+                sess.putValue("username", user.getUsername());
+                sess.putValue("user", user);
 
-        org.hibernate.Transaction t = openSession.beginTransaction();
-        Query query = openSession.createQuery("UPDATE User SET username=:newUser,fname=:fname,lname=:lname,nic=:nic,address=:address,dob=:dob,email=:email,acc_update_info=:time WHERE username=:username");
-        query.setParameter("newUser", user.getUsername());
-        query.setParameter("fname", user.getFname());
-        query.setParameter("lname", user.getLname());
-        query.setParameter("nic", user.getNic());
-        query.setParameter("address", user.getAddress());
-        query.setParameter("dob", user.getDob());
-        query.setParameter("email", user.getEmail());
+                status.put("data", "true");
+                return SUCCESS;
 
-        query.setParameter("time", time);
-        query.setParameter("username", userName);
+            } else {
 
-        if (query.executeUpdate() > 0) {
+                status.put("data", "false");
+                return SUCCESS;
+            }
+        } catch (Exception e) {
 
-            t.commit();
-            HttpSession sess = req.getSession();
-            sess.putValue("username", user.getUsername());
-            sess.putValue("user", user);
-            status.put("data", "true");
-            return SUCCESS;
-
-        } else {
-            t.rollback();
-            t.commit();
+            System.out.println(e.getMessage());
             status.put("data", "false");
             return SUCCESS;
         }
 
     }
 
-    public String dropUser() throws SQLException, ClassNotFoundException {
-        HttpServletRequest req = ServletActionContext.getRequest();
-        HttpSession session = req.getSession();
-        String userName = (String) session.getAttribute("username");
+    public String dropUser() {
 
-        Session openSession = HibernateListener.getInstance().getSession();
+        try {
+            req = ServletActionContext.getRequest();
+            sess = req.getSession();
 
-        org.hibernate.Transaction t = openSession.beginTransaction();
+            boolean update = Crud.updateOrDelete("delete User where username = ?", (String) sess.getAttribute("username"));
 
-        Query query = openSession.createQuery("delete User where username = :username");
-        query.setParameter("username", userName);
-        if (query.executeUpdate() > 0) {
-            t.commit();
-            session.removeAttribute("username");
-            session.invalidate();
+            if (update) {
 
-            status.put("data", "true");
-            return SUCCESS;
-        }
-        
-        t.rollback();
-        t.commit();
-        status.put("data", "false");
-        return SUCCESS;
-    }
+                sess.removeAttribute("username");
+                sess.invalidate();
 
-    public String logOutRequest() throws ClassNotFoundException, SQLException {
+                status.put("data", "true");
+                return SUCCESS;
+            } else {
 
-        String userName = ActionContext.getContext().getSession().get("username").toString();
-
-        String time = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(Calendar.getInstance().getTime());
-
-        Session openSession = HibernateListener.getInstance().getSession();
-
-        org.hibernate.Transaction t = openSession.beginTransaction();
-        Query query = openSession.createQuery("UPDATE User SET acc_last_logout=:time WHERE username=:username");
-        query.setParameter("time", time);
-        query.setParameter("username", userName);
-
-        if (query.executeUpdate() > 0) {
-
-            t.commit();
-            HttpServletRequest req = ServletActionContext.getRequest();
-            HttpSession session = req.getSession();
-
-            session.removeAttribute("username");
-            session.invalidate();
-
-            status.put("data", "true");
-            return SUCCESS;
-
-        } else {
-
-            t.rollback();
-            t.commit();
+                status.put("data", "false");
+                return SUCCESS;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
             status.put("data", "false");
             return SUCCESS;
+        }
 
+    }
+
+    public String logOutRequest() {
+
+        try {
+            req = ServletActionContext.getRequest();
+            boolean update = Crud.updateOrDelete("UPDATE User SET acc_last_logout=? WHERE username=?", Calendar.getInstance().getTime(), ActionContext.getContext().getSession().get("username").toString());
+
+            if (update) {
+
+                sess = req.getSession();
+
+                sess.removeAttribute("username");
+                sess.invalidate();
+
+                status.put("data", "true");
+                return SUCCESS;
+
+            } else {
+
+                status.put("data", "false");
+                return SUCCESS;
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            status.put("data", "false");
+            return SUCCESS;
         }
 
     }

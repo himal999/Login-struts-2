@@ -51,7 +51,7 @@
                         <th scope="col">DOB</th>
                         <th scope="col">Email</th>
                         <th scope="col">User Name</th>
-                        <th scope="col">Password</th>
+
                         <th scope="col">Action</th>
 
                     </tr>
@@ -64,8 +64,8 @@
                         <td><c:out value="${user.getAddress()}"/></td>
                         <td><c:out value="${user.getDob()}"/></td>
                         <td><c:out value="${user.getEmail()}"/></td>
+
                         <td><c:out value="${user.getUsername()}"/></td>
-                        <td><c:out value="${user.getPassword()}"/></td>
                         <td><a href="http://localhost:8080/strutslogin/update.jsp" class=" btn btn-primary m-2">Edit</a><button id="btnDelete" class="btn btn-warning">Delete</button></td>
 
 
@@ -102,13 +102,13 @@
                         success: function (resp) {
 
                             var obj = resp;
-                            
+
                             if (obj.data == 'true') {
                                 window.location.href = "index.jsp"
-                            }else{
-                                
-                                
-                                
+                            } else {
+
+
+
                             }
 
 
